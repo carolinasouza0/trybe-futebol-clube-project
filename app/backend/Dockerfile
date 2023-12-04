@@ -10,6 +10,6 @@ COPY . .
 
 EXPOSE 3001
 
-RUN npx tsc
+ENTRYPOINT [ "npm", "run" ]
 
-CMD ["npm", "start"]
+CMD [ "dev" ]

@@ -37,6 +37,10 @@ const validLoginBody = {
     password: validPassword,
 };
 
+const tokenValid = {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJBZG1pbiIsImlhdCI6MTcwMTczMTI1MH0.l1Tiv6pSj-92F1K-TyoEQzk2bod0dx9sIySSpLaFpPI"
+}
+
 export {
     noEmailLoginBody,
     noPasswordLoginBody,
@@ -44,4 +48,5 @@ export {
     existingUserWithWrongPasswordBody,
     existingUser,
     validLoginBody,
+    tokenValid,
 };

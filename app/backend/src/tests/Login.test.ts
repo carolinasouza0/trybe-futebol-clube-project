@@ -64,4 +64,15 @@ describe('/login', function () {
         expect(response.status).to.equal(200);
         expect(response.body).to.have.property('token');    
     });
+
+    it('should return a role if user exists and password is correct', async function () {
+        const httpRequestBody = { token: loginMock.tokenValid.token };
+        sinon.stub(jwtUtil, 'verify').returns({ id: 1, username: 'User' });
+        sinon.stub(SequelizeUser, 'findOne').returns(loginMock.existingUser as any);
+
+        const response = await await chai.request(app).get('/login/role').set('Authorization', httpRequestBody.token);
+
+        expect(response.status).to.equal(200);
+        expect(response.body).to.be.deep.equal({ role: 'user' });
+    });
 });

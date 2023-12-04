@@ -4,7 +4,7 @@ import { TokenPayload } from '../Interfaces/Login/Payload';
 const secret = process.env.JWT_SECRET || 'secret';
 
 function sign(payload: TokenPayload): string {
-  const token = jwt.sign(payload, secret, { expiresIn: '1h' });
+  const token = jwt.sign(payload, secret);
   return token;
 }
 

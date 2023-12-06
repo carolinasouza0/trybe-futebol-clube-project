@@ -83,4 +83,47 @@ describe('/matches', function() {
             expect(body).to.deep.equal({ message: `Match 1 could not be updated` });
         });
     });
+
+    describe('PATCH /matches/:id', function() {
+        it('should return updated match', async function() {
+            const match = matchesMock.matches[0];
+            sinon.stub(SequelizeMatches, 'findOne').resolves(match as any);
+            sinon.stub(SequelizeMatches, 'update').resolves([1]);
+            const token = { token: loginMock.tokenValid.token };
+
+            const { status, body } = await chai.request(app).patch('/matches/1')
+                .send({ homeTeamGoals: 2, awayTeamGoals: 2}).set('Authorization', `Bearer ${token.token}`);
+
+            expect(status).to.equal(200);
+            expect(body).to.deep.equal({ message: 'Updated', match: match });
+        });
+
+        it('should return not found when the match to update does not exists', async function() {
+            sinon.stub(SequelizeMatches, 'findOne').resolves(null);
+            const token = { token: loginMock.tokenValid.token };
+
+            const { id, ...sendData} = matchesMock.matches[0];
+
+            const { status, body } = await chai.request(app).patch('/matches/1')
+                .send(sendData).set('Authorization', `Bearer ${token.token}`);
+
+            expect(status).to.equal(404);
+            expect(body).to.deep.equal({ message: `Match 1 not found` });
+        });
+
+        it('should return conflict when the match could not be updated', async function() {
+            const match = matchesMock.matches[0];
+            sinon.stub(SequelizeMatches, 'findOne').resolves(match as any);
+            sinon.stub(SequelizeMatches, 'update').resolves([0]);
+            const token = { token: loginMock.tokenValid.token };
+
+            const { id, ...sendData} = matchesMock.matches[0];
+
+            const { status, body } = await chai.request(app).patch('/matches/1')
+                .send(sendData).set('Authorization', `Bearer ${token.token}`);
+
+            expect(status).to.equal(409);
+            expect(body).to.deep.equal({ message: `Match 1 could not be updated` });
+        });
+    });
 });

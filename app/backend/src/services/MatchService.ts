@@ -1,5 +1,5 @@
 import { IMatchesModel } from '../Interfaces/Match/IMatchesModel';
-import IMatches from '../Interfaces/Match/IMatches';
+import IMatches, { UpdateTeamsGoals } from '../Interfaces/Match/IMatches';
 import { ServiceResponse } from '../Interfaces/ServiceResponse';
 import MatchModel from '../models/MatchModel';
 
@@ -41,6 +41,27 @@ export default class MatchService {
     }
     return { status: 'SUCCESSFUL',
       data: { message: 'Finished' },
+    };
+  }
+
+  async updateMatch(id: IMatches['id'], match: UpdateTeamsGoals):
+  Promise<ServiceResponse<{ message: string, match: IMatches }>> {
+    const foundMatch = await this.matchesModel.findById(id);
+
+    if (!foundMatch) {
+      return {
+        status: 'NOT_FOUND',
+        data: { message: `Match ${id} not found` },
+      };
+    }
+    const updatedMatch = await this.matchesModel.update(id, match);
+    if (!updatedMatch) {
+      return { status: 'CONFLICT',
+        data: { message: `Match ${id} could not be updated` },
+      };
+    }
+    return { status: 'SUCCESSFUL',
+      data: { message: 'Updated', match: updatedMatch },
     };
   }
 }

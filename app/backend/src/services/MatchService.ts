@@ -22,4 +22,25 @@ export default class MatchService {
       data: matches,
     };
   }
+
+  async finishMatch(id: IMatches['id']): Promise<ServiceResponse<{ message: string }>> {
+    const match = await this.matchesModel.findById(id);
+    if (!match) {
+      return {
+        status: 'NOT_FOUND',
+        data: { message: `Match ${id} not found` },
+      };
+    }
+    const matchToUpdate = { inProgress: false };
+    const updatedMatch = await this.matchesModel.update(id, matchToUpdate);
+    if (!updatedMatch) {
+      return {
+        status: 'CONFLICT',
+        data: { message: `Match ${id} could not be updated` },
+      };
+    }
+    return { status: 'SUCCESSFUL',
+      data: { message: 'Finished' },
+    };
+  }
 }

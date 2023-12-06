@@ -15,4 +15,13 @@ export default class TeamModel implements ITeamsModel {
     const team = await this.model.findByPk(id);
     return team;
   }
+
+  async findTeams(teamId1: number, teamId2: number): Promise<ITeams[]> {
+    const teams = await this.model.findAll({
+      where: {
+        id: [teamId1, teamId2],
+      },
+    });
+    return teams;
+  }
 }

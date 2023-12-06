@@ -80,4 +80,9 @@ export default class MatchModel implements IMatchesModel {
     if (updated === 0) return null;
     return this.findById(id);
   }
+
+  async create(match: IMatches): Promise<IMatches> {
+    const newMatch = await this.model.create(match);
+    return newMatch;
+  }
 }

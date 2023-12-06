@@ -85,4 +85,13 @@ const matches = [
     },
   ]
 
-export {matches};
+  const createdMatch = {
+    "id": 1,
+    "homeTeamId": 16,
+    "homeTeamGoals": 2,
+    "awayTeamId": 8,
+    "awayTeamGoals": 1,
+    "inProgress": true
+  }
+
+export {matches, createdMatch};

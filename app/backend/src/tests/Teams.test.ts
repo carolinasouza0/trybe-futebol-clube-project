@@ -52,5 +52,7 @@ describe('/teams', function () {
     expect(chaiHttpResponse.body).to.be.deep.eq({ message: 'Team 1 not found' });
     expect(chaiHttpResponse.status).to.be.eq(404);
   });
-  afterEach(sinon.restore);
+  afterEach(() => {
+    sinon.restore();
+  });
 });

@@ -126,4 +126,49 @@ describe('/matches', function() {
             expect(body).to.deep.equal({ message: `Match 1 could not be updated` });
         });
     });
+
+    describe('POST /matches', function() {
+        it('should return created match', async function() {
+            const match = matchesMock.createdMatch;
+            sinon.stub(SequelizeMatches, 'create').resolves(match as any);
+            const token = { token: loginMock.tokenValid.token };
+
+            const { id, inProgress, ...sendData} = matchesMock.createdMatch;
+
+            const { status, body } = await chai.request(app).post('/matches')
+                .send(sendData).set('Authorization', `Bearer ${token.token}`);
+
+            expect(status).to.equal(201);
+            expect(body).to.deep.equal(match);
+        });
+
+        it('should return unprocessable entity when the homeTeam and the awayTeam are the same', async function() {
+            const match = matchesMock.createdMatch;
+            sinon.stub(SequelizeMatches, 'create').resolves(match as any);
+            const token = { token: loginMock.tokenValid.token };
+
+            const { id, inProgress, ...sendData} = matchesMock.createdMatch;
+
+            const { status, body } = await chai.request(app).post('/matches')
+                .send({ ...sendData, homeTeamId: 1, awayTeamId: 1}).set('Authorization', `Bearer ${token.token}`);
+
+            expect(status).to.equal(422);
+            expect(body).to.deep.equal({ message: `It is not possible to create a match with two equal teams` });
+        });
+
+        it('should return not found when one of the teams does not exists', async function() {
+            sinon.stub(SequelizeTeam, 'findAll').resolves(matchesMock.matches[0] as any);
+            const { id, inProgress, ...sendData} = matchesMock.createdMatch;
+
+            const { status, body } = await chai.request(app).post('/matches')
+                .send(sendData).set('Authorization', `Bearer ${loginMock.tokenValid.token}`);
+
+            expect(status).to.equal(404);
+            expect(body).to.deep.equal({ message: `There is no team with such id!` });
+        });
+    });
+
+    afterEach(() => {
+        sinon.restore();
+    });
 });

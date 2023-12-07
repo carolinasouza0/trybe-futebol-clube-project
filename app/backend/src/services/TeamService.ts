@@ -3,10 +3,14 @@ import TeamModel from '../models/TeamModel';
 import ITeams from '../Interfaces/Team/ITeams';
 import { ITeamsModel } from '../Interfaces/Team/ITeamsModel';
 import { ServiceResponse } from '../Interfaces/ServiceResponse';
+import { IMatchesModel } from '../Interfaces/Match/IMatchesModel';
+import MatchModel from '../models/MatchModel';
+// import IMatches from '../Interfaces/Match/IMatches';
 
 export default class TeamService {
   constructor(
     private teamModel: ITeamsModel = new TeamModel(),
+    private matchesModel: IMatchesModel = new MatchModel(),
   ) {}
 
   public async getAllTeams(): Promise<ServiceResponse<ITeams[]>> {

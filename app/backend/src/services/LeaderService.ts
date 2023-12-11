@@ -63,11 +63,42 @@ export default class LeaderService {
       leaderBoard[index].goalsFavor += goalsFavor;
       leaderBoard[index].goalsOwn += goalsOwn;
     });
-    return leaderBoard;
+
+    const finalBoard = LeaderService.createLeaderBoard(leaderBoard);
+    const sortedBoard = LeaderService.sortedLeaderBoard(finalBoard);
+    return sortedBoard;
   }
 
   private static createHomeMatches(matches: MatchWithTeams[]): ILeaderboard[] {
     return LeaderService.createMatches(matches, 'homeTeamGoals', 'awayTeamGoals');
+  }
+
+  private static calculateEfficiency(match: ILeaderboard): number {
+    const { totalPoints, totalGames } = match;
+    const efficiency = (totalPoints / (totalGames * 3)) * 100;
+    return efficiency.toFixed(2) as unknown as number;
+  }
+
+  private static calculateGoalsBalance(match: ILeaderboard): number {
+    const { goalsFavor, goalsOwn } = match;
+    return goalsFavor - goalsOwn;
+  }
+
+  private static createLeaderBoard(matches: ILeaderboard[]): ILeaderboard[] {
+    return matches.map((match) => {
+      const efficiency = LeaderService.calculateEfficiency(match);
+      const goalsBalance = LeaderService.calculateGoalsBalance(match);
+      return { ...match, efficiency, goalsBalance };
+    });
+  }
+
+  private static sortedLeaderBoard(matches: ILeaderboard[]) {
+    return matches.sort((a, b) => (
+      b.totalPoints - a.totalPoints
+        || b.totalVictories - a.totalVictories
+        || b.goalsBalance - a.goalsBalance
+        || b.goalsFavor - a.goalsFavor
+    ));
   }
 
   async getHomeMatches(): Promise<ILeaderboard[]> {

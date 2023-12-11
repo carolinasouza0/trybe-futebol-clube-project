@@ -10,4 +10,9 @@ export default class LeaderController {
     const leaderBoard = await this.leaderService.getHomeMatches();
     res.status(200).json(leaderBoard);
   }
+
+  public async getAwayLeaderBoard(req: Request, res: Response) {
+    const leaderBoard = await this.leaderService.getAwayMatches();
+    res.status(200).json(leaderBoard);
+  }
 }

@@ -107,4 +107,11 @@ export default class LeaderService {
     const accMatches = LeaderService.accMatches(homeMatches);
     return accMatches;
   }
+
+  async getAwayMatches(): Promise<ILeaderboard[]> {
+    const matches = await this.model.findAll() as MatchWithTeams[];
+    const awayMatches = LeaderService.createMatches(matches, 'awayTeamGoals', 'homeTeamGoals');
+    const accMatches = LeaderService.accMatches(awayMatches);
+    return accMatches;
+  }
 }
